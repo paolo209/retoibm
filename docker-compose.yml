@@ -1,0 +1,35 @@
+#RETO IBM - PAOLO CASASOLA ESTEBAN
+version: '3.8'
+services:
+
+#CONTENEDOR BACKEND
+  retoibm_node:
+     build:
+       context: ./backend
+       dockerfile: Dockerfile-backend
+     container_name: 'retoibm_nodejs'
+     command: sh -c 'npm run start'
+     restart: on-failure
+     networks:
+       - ngproxy
+# EN CASO SE UTILICE SUBDOMINIOS
+     environment:
+       VIRTUAL_HOST: sumar.retoibm.com
+
+#CONTENEDOR NGINX REVERSE PROXY
+  proxy:
+    build:
+      context: ./nginxproxy
+      dockerfile: Dockerfile-nginx
+    depends_on: 
+      - retoibm_node
+    container_name: 'retoibm_nginx'
+    ports:
+      - '80:80'
+    restart: on-failure
+    networks:
+      - ngproxy
+networks:
+  ngproxy:
+    name: nginx-reverse-proxy
+    driver: bridge 

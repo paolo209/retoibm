@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  retoibm:
+    image: node:15.4.0-alpine3.10
+    working_dir: /home/node
+    command: sh -c 'npm install && npm run start'
+    volumes:
+      - ../backend/retobase-nodejs:/home/node
+    networks:
+      - ngproxy
+    ports:
+      - '5000:4000'
+networks:
+  ngproxy:
+    driver: bridge
+    name: nginx-reverse-proxy

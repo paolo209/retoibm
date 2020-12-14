@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  retoibm:
+    image: node:15.4.0-alpine3.10
+    deploy:
+      replicas: 2
+        endpoint_mode: dnsrr
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 1024M
+          reservations:
+            cpus: '0.25'
+            memory: 500M
+    working_dir: /home/node
+    command: sh -c 'npm install && npm run start'
+    volumes:
+      - ../backend/retobase-nodejs:/home/node
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: overlay
+    name: nginx-proxy-swarm
